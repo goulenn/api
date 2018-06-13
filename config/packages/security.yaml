@@ -1,0 +1,24 @@
+security:
+    providers:
+        ldap:
+            id: App\Security\User\LdapUserProvider
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        login:
+            pattern:  ^/login$
+            stateless: true
+            anonymous: true
+            guard:
+                authenticators:
+                    - App\Security\LdapAuthenticator
+        api:
+            pattern:   ^/
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+
+    access_control:
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

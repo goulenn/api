@@ -59,6 +59,24 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "jms/metadata": {
+        "version": "1.6.0"
+    },
+    "jms/parser-lib": {
+        "version": "1.0.0"
+    },
+    "jms/serializer": {
+        "version": "1.12.1"
+    },
+    "jms/serializer-bundle": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.0",
+            "ref": "fe60ce509ef04a3f40da96e3979bc8d9b13b2372"
+        }
+    },
     "lexik/jwt-authentication-bundle": {
         "version": "2.3",
         "recipe": {
@@ -80,6 +98,12 @@
     "paragonie/random_compat": {
         "version": "v2.0.15"
     },
+    "phpcollection/phpcollection": {
+        "version": "0.5.0"
+    },
+    "phpoption/phpoption": {
+        "version": "1.5.0"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -94,6 +118,18 @@
     },
     "ramsey/uuid": {
         "version": "3.7.3"
+    },
+    "rollandrock/param-converter-bundle": {
+        "version": "dev-master"
+    },
+    "sensio/framework-extra-bundle": {
+        "version": "4.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.0",
+            "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
+        }
     },
     "symfony/cache": {
         "version": "v4.1.0"

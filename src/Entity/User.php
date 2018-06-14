@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Common\Id;
+use App\Entity\User\LdapUser;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
-use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -13,13 +13,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=36)
-     * @ORM\Id
-     */
-    private $id;
+    use Id;
+    use LdapUser;
 
     /**
      * @var string
@@ -34,21 +29,11 @@ class User implements UserInterface
     private $name;
 
     /**
-     * @var string
-     */
-    private $dn;
-
-    /**
      * @var array
      *
      * @ORM\Column(type="json_array")
      */
     private $roles;
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
 
     public function getUsername(): string
     {
@@ -70,16 +55,6 @@ class User implements UserInterface
         $this->name = $name;
     }
 
-    public function getDn(): string
-    {
-        return $this->dn;
-    }
-
-    public function setDn(string $dn): void
-    {
-        $this->dn = $dn;
-    }
-
     public function getRoles(): array
     {
         return $this->roles ? : [];
@@ -88,14 +63,6 @@ class User implements UserInterface
     public function setRoles(array $roles): void
     {
         $this->roles = $roles;
-    }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function prePersist()
-    {
-        $this->id = Uuid::uuid4()->toString();
     }
 
     public function getPassword()
@@ -108,16 +75,5 @@ class User implements UserInterface
 
     public function eraseCredentials()
     {
-    }
-
-    public static function fromLdap(Entry $entry): User
-    {
-        $user = new self();
-
-        $user->setDn($entry->getDn());
-        $user->setUsername($entry->getAttribute('sn')[0]);
-        $user->setName($entry->getAttribute('cn')[0]);
-
-        return $user;
     }
 }

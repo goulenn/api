@@ -11,7 +11,15 @@ use Symfony\Component\HttpFoundation\Response;
 class IssueController extends ApiController
 {
     /**
-     * @Route("/issue", methods={"POST"})
+     * @Route("/issues", methods={"GET"})
+     */
+    public function getCollection()
+    {
+        return $this->handleBasicCollection(Issue::class, [], ['createdAt' => 'DESC']);
+    }
+
+    /**
+     * @Route("/issues", methods={"POST"})
      *
      * @ParamConverter(
      *     name="issue",

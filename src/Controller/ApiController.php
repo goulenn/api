@@ -20,9 +20,6 @@ class ApiController extends BaseController
         return $this->handleSerializedResponse($serialized);
     }
 
-    /**
-     * @param array|object $object
-     */
     protected function handleResponse($object, int $statusCode = Response::HTTP_OK, array $groups = []): Response
     {
         $context = $groups ? SerializationContext::create()->setGroups($groups) : null;

@@ -31,5 +31,10 @@ services:
         arguments:
             - App\Entity\Issue
 
+    App\Repository\UserRepository:
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+        - App\Entity\User
+
     App\Manager\IssueManager:
         public: true

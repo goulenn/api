@@ -21,6 +21,7 @@ class IssueController extends ApiController
      */
     public function post(Issue $issue)
     {
+        $issue->setIssuer($this->getUser());
         $this->get(IssueManager::class)->save($issue);
 
         return $this->handleResponse($issue, Response::HTTP_CREATED);

@@ -3,6 +3,7 @@
 namespace App\Security\User;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Symfony\Component\Ldap\Ldap;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -11,7 +12,44 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class LdapUserProvider implements UserProviderInterface
 {
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
+    /**
+     * @return UserRepository
+     */
+    public function getUserRepository(): UserRepository
+    {
+        return $this->userRepository;
+    }
+
+    /**
+     * @param UserRepository $userRepository
+     */
+    public function setUserRepository(UserRepository $userRepository): void
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function loadUserByUsername($username): User
+    {
+        $user = $this->userRepository->findOneByUsername($username);
+
+        if (!$username) {
+            throw new UsernameNotFoundException();
+        }
+
+        return $user;
+    }
+
+    public function loadUserFromLdap($username): User
     {
         $ldap = Ldap::create('ext_ldap', [
             'connection_string' => 'ldap://localhost:10389'

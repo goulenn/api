@@ -5,10 +5,11 @@ namespace App\Entity;
 use App\Entity\Common\Id;
 use App\Entity\User\LdapUser;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class User implements UserInterface
@@ -32,6 +33,8 @@ class User implements UserInterface
      * @var array
      *
      * @ORM\Column(type="json_array")
+     *
+     * @Serializer\Exclude
      */
     private $roles;
 

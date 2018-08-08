@@ -3,10 +3,13 @@
 namespace App\Security;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
+use App\Security\User\LdapUserProvider;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Ldap\Ldap;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -21,9 +24,17 @@ class LdapAuthenticator extends AbstractGuardAuthenticator
      */
     private $successHandler;
 
-    public function __construct(AuthenticationSuccessHandler $successHandler)
-    {
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    public function __construct(
+        AuthenticationSuccessHandler $successHandler,
+        UserRepository $userRepository
+    ) {
         $this->successHandler = $successHandler;
+        $this->userRepository = $userRepository;
     }
 
 
@@ -42,7 +53,21 @@ class LdapAuthenticator extends AbstractGuardAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider): UserInterface
     {
-        return $userProvider->loadUserByUsername($credentials['username']);
+        if (!$userProvider instanceof LdapUserProvider) {
+            throw new AccessDeniedHttpException();
+        }
+
+        /* @var User $user */
+        $user = $userProvider->loadUserFromLdap($credentials['username']);
+
+        $dbUser = $this->userRepository->findOneByDn($user->getDn());
+        if (!$dbUser) {
+            $this->userRepository->save($user);
+
+            return $user;
+        }
+
+        return $dbUser;
     }
 
     public function checkCredentials($credentials, UserInterface $user): bool

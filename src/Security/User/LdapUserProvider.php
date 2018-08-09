@@ -17,9 +17,21 @@ class LdapUserProvider implements UserProviderInterface
      */
     private $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    /**
+     * @var string
+     */
+    private $connection;
+
+    /**
+     * @var string
+     */
+    private $rootDn;
+
+    public function __construct(UserRepository $userRepository, string $connection, string $rootDn)
     {
         $this->userRepository = $userRepository;
+        $this->connection = $connection;
+        $this->rootDn = $rootDn;
     }
 
     /**
@@ -52,11 +64,11 @@ class LdapUserProvider implements UserProviderInterface
     public function loadUserFromLdap($username): User
     {
         $ldap = Ldap::create('ext_ldap', [
-            'connection_string' => 'ldap://localhost:10389'
+            'connection_string' => $this->connection
         ]);
 
         $ldap->bind('uid=admin,ou=system', 'secret');
-        $result = $ldap->query('dc=example,dc=com', sprintf('sn=%s', $username))->execute()->toArray();
+        $result = $ldap->query($this->rootDn, sprintf('sn=%s', $username))->execute()->toArray();
 
         if (!$result) {
             throw new UsernameNotFoundException();

@@ -38,3 +38,12 @@ services:
 
     App\Manager\IssueManager:
         public: true
+
+    App\Security\LdapAuthenticator:
+        arguments:
+            $connection: "%env(LDAP_CONNECTION)%"
+
+    App\Security\User\LdapUserProvider:
+        arguments:
+            $connection: "%env(LDAP_CONNECTION)%"
+            $rootDn: "%env(LDAP_ROOT_DN)%"

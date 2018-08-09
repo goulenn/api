@@ -29,12 +29,19 @@ class LdapAuthenticator extends AbstractGuardAuthenticator
      */
     private $userRepository;
 
+    /**
+     * @var string
+     */
+    private $connection;
+
     public function __construct(
         AuthenticationSuccessHandler $successHandler,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        string $connection
     ) {
         $this->successHandler = $successHandler;
         $this->userRepository = $userRepository;
+        $this->connection = $connection;
     }
 
 
@@ -74,7 +81,7 @@ class LdapAuthenticator extends AbstractGuardAuthenticator
     {
         /** @var User $user */
         $ldap = Ldap::create('ext_ldap', [
-            'connection_string' => 'ldap://localhost:10389'
+            'connection_string' => $this->connection
         ]);
 
         try {
